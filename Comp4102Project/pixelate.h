@@ -5,12 +5,12 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <cmath>
-#include <unistd.h>
 
 #ifndef COMP4102_PROJECT_PIXELATE_H
 #define COMP4102_PROJECT_PIXELATE_H
 
-cv::Mat restrict_color_palette(cv::Mat& im1, int num_colors)
+cv::Mat restrict_color_palette(cv::Mat& im1)
+
 {
     // Converts the image from 24 bit RGB to b bit BGR back to 24 bit.
     // Colors not in the palette are lost in the conversion and rounded
@@ -59,14 +59,13 @@ cv::Mat pixelate(cv::Mat& img, int factor){
     cv::GaussianBlur(img, smoothed, ksize, sigma, sigma, cv::BORDER_DEFAULT);
 
     // resize
-    cv::Mat small;
+    cv::Mat s_mat;
     int s_width = (int)floor(width/factor);
     int s_height = (int)floor(height/factor);
     cv::Size s_size(s_width, s_height);
-    cv::resize(img, small, s_size, cv::INTER_LINEAR_EXACT);
-    // cv::resize(small, small, s_size, cv::INTER_NEAREST);
+    cv::resize(smoothed, s_mat, s_size, cv::INTER_LINEAR_EXACT);
     // restrict colors
-    cv::Mat out = restrict_color_palette(small, 3);
+    cv::Mat out = restrict_color_palette(s_mat);
     return out;
 }
 
