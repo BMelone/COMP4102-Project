@@ -1,7 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include "segment-image.h"
-
+/*
 int main()
 {
 	cv::Mat img = cv::imread("lenna.png");
@@ -22,4 +22,4 @@ int main()
 	cv::imwrite("output.png", output);
 	cv::waitKey(0);
 	return 0;
-}
+}*/
