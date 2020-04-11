@@ -10,6 +10,7 @@
 #define COMP4102_PROJECT_PIXELATE_H
 
 cv::Mat restrict_color_palette(cv::Mat& im1)
+
 {
     // Converts the image from 24 bit RGB to b bit BGR back to 24 bit.
     // Colors not in the palette are lost in the conversion and rounded
