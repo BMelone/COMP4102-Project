@@ -3,6 +3,7 @@
 #include "segment-image.h"
 #include "disjoint-set.h"
 #include <unordered_set>
+#include "pixelate.h"
 
 int threshold_val, min_size_val, sigma_val;
 const int threshold_max = 20;
@@ -56,12 +57,12 @@ void select_location(int event, int x, int y, int flags, void* param) {
 
 int main()
 {
-	img = cv::imread("lenna.png");
+	img = cv::imread("spiderman.png");
 
 	threshold_val = 6;
 	min_size_val = 5;
 	sigma_val = 5;
-	cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+	cv::namedWindow("image", cv::WINDOW_NORMAL);
 
 	cv::createTrackbar("Sigma", "image", &sigma_val, sigma_max, sigma_and_display);
 	cv::createTrackbar("Threshold", "image", &threshold_val, threshold_max, threshold_and_display);
@@ -90,6 +91,11 @@ int main()
 
 	cv::imshow("image", output);
 	cv::imwrite("output2.png", output);
+	cv::waitKey(0);
+
+	cv::Mat pixelated = pixelate(output, 20);
+	cv::imshow("image", pixelated);
+	cv::imwrite("pixelted.png", pixelated);
 	cv::waitKey(0);
 
 	return 0;
