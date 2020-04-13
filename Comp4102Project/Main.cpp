@@ -55,7 +55,7 @@ void select_location(int event, int x, int y, int flags, void* param) {
 		savedSegments.insert(u->find(y * img.cols + x)); //save the selected segment
 	}
 }
-
+/*
 int main()
 {
 	img = cv::imread("smokin.png");
