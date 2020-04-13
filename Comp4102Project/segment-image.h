@@ -50,7 +50,7 @@ float diff(cv::Mat img, int x1, int y1, int x2, int y2) {
  * min_size: minimum component size (enforced by post-processing stage).
  * num_ccs: number of connected components in the segmentation.
  */
-cv::Mat segment_image(cv::Mat& img, float sigma, float c, int min_size, int *num_ccs) {
+cv::Mat segment_image(cv::Mat& img, float sigma, float c, int min_size, int *num_ccs, universe*& u) {
 	cv::Mat blurred;
 
 	int size = (int)ceil(sigma * 4.0) + 1;
@@ -97,7 +97,7 @@ cv::Mat segment_image(cv::Mat& img, float sigma, float c, int min_size, int *num
 	}
 
 	// segment
-	universe *u = segment_graph(width*height, num, edges, c);
+	u = segment_graph(width*height, num, edges, c);
 
 	// post process small components
 	for (int i = 0; i < num; i++) {
@@ -125,7 +125,7 @@ cv::Mat segment_image(cv::Mat& img, float sigma, float c, int min_size, int *num
       int comp = u->find(y * width + x);
 	  output.at<cv::Vec3b>(y, x) = colors[comp];
     }
-  }  
+  }
 
   return output;
 }
