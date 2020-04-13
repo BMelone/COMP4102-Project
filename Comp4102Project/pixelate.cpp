@@ -29,10 +29,13 @@ cv::Mat restrict_color_15bit(cv::Mat& im1)
 	{
 		for (int j = 0; j < width; j++)
 		{
-
-			int R = (int)floor(im1.at<cv::Vec3b>(i, j)[0] / p);
-			int G = (int)floor(im1.at<cv::Vec3b>(i, j)[1] / p);
-			int B = (int)floor(im1.at<cv::Vec3b>(i, j)[2] / p);
+			if (im1.at<cv::Vec4b>(i, j)[3] == 0) {
+				*out.ptr<cv::Vec4b>(i, j) = cv::Vec4b(0, 0, 0, 0);
+				continue;
+			}
+			int R = (int)floor(im1.at<cv::Vec4b>(i, j)[0] / p);
+			int G = (int)floor(im1.at<cv::Vec4b>(i, j)[1] / p);
+			int B = (int)floor(im1.at<cv::Vec4b>(i, j)[2] / p);
 
 			int val = B * bs + G * bss + R;
 
@@ -40,9 +43,10 @@ cv::Mat restrict_color_15bit(cv::Mat& im1)
 			G = ((val / bss) % bss) * p;
 			B = ((val / bs) % bss) * p;
 
-			out.at<cv::Vec3b>(i, j)[0] = R;
-			out.at<cv::Vec3b>(i, j)[1] = G;
-			out.at<cv::Vec3b>(i, j)[2] = B;
+			out.at<cv::Vec4b>(i, j)[0] = R;
+			out.at<cv::Vec4b>(i, j)[1] = G;
+			out.at<cv::Vec4b>(i, j)[2] = B;
+			out.at<cv::Vec4b>(i, j)[3] = 255;
 		}
 	}
 	return out;
@@ -53,10 +57,10 @@ cv::Mat restrict_color_15bit(cv::Mat& im1)
 	Pixels closest to a color in the palette will be replaced by that color.
 	By Joseph
 	@param cv::Mat& input image
-	@param std::vector<cv::Vec3b> color palette
+	@param std::vector<cv::Vec4b> color palette
 	@return cv::Mat output image
 */
-cv::Mat restrict_color_palette(cv::Mat& im1, std::vector<cv::Vec3b> palette) {
+cv::Mat restrict_color_palette(cv::Mat& im1, std::vector<cv::Vec4b> palette) {
 	int width = im1.cols;
 	int height = im1.rows;
 
@@ -66,17 +70,18 @@ cv::Mat restrict_color_palette(cv::Mat& im1, std::vector<cv::Vec3b> palette) {
 		for (int j = 0; j < height; j++)
 		{
 			float dist = 1000000;
-			cv::Vec3b chosenColor = cv::Vec3b(0, 0, 0);
-			cv::Vec3b pixelColor= im1.at<cv::Vec3b>(j, i);
-			for (cv::Vec3b paletteColor : palette) {
-				float newdist = sqrt(pow((paletteColor[0]-pixelColor[0]),2.0)+ pow((paletteColor[1] - pixelColor[1]), 2.0)+ pow((paletteColor[2] - pixelColor[2]), 2.0));
-				if (newdist<dist) {
-					dist = newdist;
-					chosenColor = paletteColor;
+			cv::Vec4b chosenColor = cv::Vec4b(0, 0, 0, 0);
+			cv::Vec4b pixelColor= im1.at<cv::Vec4b>(j, i);
+			if (pixelColor[3] > 0) {
+				for (cv::Vec4b paletteColor : palette) {
+					float newdist = sqrt(pow((paletteColor[0] - pixelColor[0]), 2.0) + pow((paletteColor[1] - pixelColor[1]), 2.0) + pow((paletteColor[2] - pixelColor[2]), 2.0));
+					if (newdist < dist) {
+						dist = newdist;
+						chosenColor = paletteColor;
+					}
 				}
 			}
-			out.at<cv::Vec3b>(j, i) = chosenColor;
-
+			out.at<cv::Vec4b>(j, i) = chosenColor;
 		}
 	}
 	printf("rows: %d\n", im1.rows);
@@ -98,16 +103,16 @@ cv::Mat restrict_color_kMeans(cv::Mat& im1, int ksplits) {
 	cv::Mat labels, centers;
 	cv::kmeans(data, ksplits, labels, cv::TermCriteria(CV_TERMCRIT_ITER, 10, 1.0), 3, cv::KMEANS_PP_CENTERS, centers);
 
-	centers = centers.reshape(3, centers.rows);
-	data = data.reshape(3, data.rows);
+	centers = centers.reshape(4, centers.rows);
+	data = data.reshape(4, data.rows);
 
-	cv::Vec3f *p = data.ptr<cv::Vec3f>();
+	cv::Vec4f *p = data.ptr<cv::Vec4f>();
 	for (size_t i = 0; i < data.rows; i++) {
 		int center_id = labels.at<int>(i);
-		p[i] = centers.at<cv::Vec3f>(center_id);
+		p[i] = centers.at<cv::Vec4f>(center_id);
 	}
 
-	out = data.reshape(3, im1.rows);
+	out = data.reshape(4, im1.rows);
 	out.convertTo(out, CV_8U);
 	return out;
 }
@@ -120,7 +125,7 @@ cv::Mat restrict_color_kMeans(cv::Mat& im1, int ksplits) {
 	@param int factor to scale down by
 	@return cv::Mat output image
 */
-cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt = KMEANS) {
+cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
 	int width = img.cols;
 	int height = img.rows;
 
@@ -155,7 +160,26 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt = KMEANS) {
 	
 	// restrict colors
 	//cv::Mat out = restrict_color_palette(s_mat);
-	std::vector<cv::Vec3b> colors{cv::Vec3b(0,0,255),cv::Vec3b(106,182,255),cv::Vec3b(0,106,255),cv::Vec3b(0,51,127),cv::Vec3b(0,216,255),cv::Vec3b(0,255,182),cv::Vec3b(0,255,76),cv::Vec3b(33,255,0),cv::Vec3b(144,255,0),cv::Vec3b(255,255,0),cv::Vec3b(255,148,0),cv::Vec3b(0,38,255),cv::Vec3b(255,0,72),cv::Vec3b(255,0,178),cv::Vec3b(220,0,255),cv::Vec3b(110,0,255),cv::Vec3b(0,0,0),cv::Vec3b(255,255,255),cv::Vec3b(64,64,64)};
+	std::vector<cv::Vec4b> colors{
+		cv::Vec4b(0, 0, 255, 255),
+		cv::Vec4b(106, 182, 255, 255),
+		cv::Vec4b(0, 106, 255, 255),
+		cv::Vec4b(0, 51, 127, 255),
+		cv::Vec4b(0, 216, 255, 255),
+		cv::Vec4b(0, 255, 182, 255),
+		cv::Vec4b(0, 255, 76, 255),
+		cv::Vec4b(33, 255, 0, 255),
+		cv::Vec4b(144, 255, 0, 255),
+		cv::Vec4b(255, 255, 0, 255),
+		cv::Vec4b(255, 148, 0, 255),
+		cv::Vec4b(0, 38, 255 , 255),
+		cv::Vec4b(255, 0, 72 ),
+		cv::Vec4b(255, 0, 178, 255),
+		cv::Vec4b(220, 0, 255, 255),
+		cv::Vec4b(110, 0, 255, 255),
+		cv::Vec4b(0, 0, 0, 255),
+		cv::Vec4b(255, 255, 255, 255),
+		cv::Vec4b(64, 64, 64, 255)};
 	cv::Mat out;
 	switch (opt) 
 	{

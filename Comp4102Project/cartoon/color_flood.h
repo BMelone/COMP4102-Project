@@ -7,5 +7,5 @@
 
 void FloodColors(const cv::Mat& src, cv::Mat& dst, const std::unordered_map<PointC, cv::Vec4b>& colors);
 void FloodColors(cv::Mat& dst, const std::unordered_map<PointC, cv::Vec4b>& colors);
-void AppoximateColorMap(const cv::Mat& src, std::unordered_map<PointC, cv::Vec4b>& dst, int scale = 4);
+void ApproximateColorMap(const cv::Mat& src, std::unordered_map<PointC, cv::Vec4b>& dst, int scale = 4);
 void SetBorders(cv::Mat& dst, cv::Size size, const std::vector<std::vector<Point2fC>>& borders, int scale = 4);

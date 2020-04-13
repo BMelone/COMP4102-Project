@@ -38,7 +38,7 @@ public:
 	//! prints underlying edge graph
 	friend std::ostream& operator<<(std::ostream& os, const SimilarityGraph& graph);
 	void showDual(const cv::Mat& image);
-	BorderGraph ExtractDualGraphBorderChains(const cv::Mat& image);
+	BorderGraph ExtractDualGraph();
 private:
 	//! contains edges between similar pixels
 	cv::Mat edges;

@@ -137,7 +137,7 @@ SimilarityGraph::corner SimilarityGraph::FindPixelCorner(int y, int x, int i, in
 	return result;
 }
 
-BorderGraph SimilarityGraph::ExtractDualGraphBorderChains(const cv::Mat& image) {
+BorderGraph SimilarityGraph::ExtractDualGraph() {
 	BorderGraph borders;
 	for (int y = 0; y < edges.rows; y++) {
 		for (int x = 0; x < edges.cols; x++) {

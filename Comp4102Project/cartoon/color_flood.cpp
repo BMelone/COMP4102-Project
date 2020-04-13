@@ -38,7 +38,7 @@ void FloodColors(cv::Mat& dst, const std::unordered_map<PointC, cv::Vec4b>& colo
 	//fix unreached diagonals
 	for (int y = 0; y < dst.rows; y++) {
 		for (int x = 0; x < dst.cols; x++) {
-			if (dst.at<cv::Vec4b>(y, x)[3] == 0 || dst.at<cv::Vec4b>(y, x)[3] == 128) {
+			if (dst.at<cv::Vec4b>(y, x)[3] == 128) { // still 0 holes
 				if (x > 0)
 					*dst.ptr<cv::Vec4b>(y, x) = dst.at<cv::Vec4b>(y, x - 1);
 				else if (y > 0)
@@ -58,7 +58,7 @@ void SetBorders(cv::Mat& dst, cv::Size size, const std::vector<std::vector<Point
 	}
 }
 
-void AppoximateColorMap(const cv::Mat& src, std::unordered_map<PointC, cv::Vec4b>& dst, int scale) {
+void ApproximateColorMap(const cv::Mat& src, std::unordered_map<PointC, cv::Vec4b>& dst, int scale) {
 	for (int i = 0; i <= src.rows; i++) {
 		for (int j = 0; j <= src.cols; j++) {
 			if (i != src.rows && j != src.cols) {
