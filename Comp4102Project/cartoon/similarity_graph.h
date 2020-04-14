@@ -1,4 +1,5 @@
 #pragma once
+/** @author Eimhin McDonald */
 
 #include <cstdint>
 #include <opencv2/opencv.hpp>
@@ -49,12 +50,15 @@ private:
 	//! checks if neighbour direction vector is diagonal
 	inline bool NeighbourIsDiagonal(int y, int x) { return (x && y); }
 
+	//! checks if the pixel is on a contraint border
 	bool PixelIsBorder(int y, int x);
 
+	//! corner of a pixel
 	struct corner {
 		Point2fC first, second;
 		bool split, first_valid, second_valid;
 	};
 
+	//! gets the corner of a pixel in a direction
 	corner FindPixelCorner(int y, int x, int i, int j);
 };

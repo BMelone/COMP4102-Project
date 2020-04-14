@@ -1,7 +1,12 @@
 #pragma once
+/** @author Eimhin McDonald */
 
 #include "point_c.h"
 
+/** @brief edge between two points in 2d
+
+The directionality of the edge does not matter
+*/
 template <typename T>
 struct Edge {
 	Point_C<T> first;
@@ -12,6 +17,7 @@ struct Edge {
 	}
 };
 
+// add hashing
 namespace std {
 	template <typename T> struct hash<Edge<T>> {
 		size_t operator()(const Edge<T> &lhs) const {

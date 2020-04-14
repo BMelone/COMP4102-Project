@@ -190,11 +190,3 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
 
 	return out;
 }
-/*
-int main() {
-	cv::Mat img = cv::imread("smokin.png");
-	cv::Mat thickEdges = pixelate(img, 4,PALETTE);
-	cv::imshow("image", thickEdges);
-	cv::imwrite("pixelted.png", thickEdges);
-	cv::waitKey(0);
-}*/
