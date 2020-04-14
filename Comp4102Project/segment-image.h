@@ -16,6 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 */
 
+// Modified by Benjamin Melone
+
 #ifndef SEGMENT_IMAGE
 #define SEGMENT_IMAGE
 
@@ -23,7 +25,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #include <stdlib.h>
 #include <opencv2/opencv.hpp>
 #include <vector>
-#include "filter.h"
 #include "segment-graph.h"
 
 
