@@ -20,10 +20,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #define SEGMENT_IMAGE
 
 #include <cstdlib>
-#include "filter.h"
-#include "segment-graph.h"
 #include <stdlib.h>
 #include <opencv2/opencv.hpp>
+#include <vector>
+#include "filter.h"
+#include "segment-graph.h"
+
 
 inline uchar square(const uchar& x) {
 	return x * x;
@@ -113,7 +115,7 @@ cv::Mat segment_image(cv::Mat& img, float sigma, float c, int min_size, int *num
 
   // pick random colors for each component
   std::vector<cv::Vec3b> colors;
-  colors.reserve(width*height);
+  colors.resize(width*height);
   for (int i = 0; i < width*height; i++) {
 	  colors[i][0] = rand() % 255;
 	  colors[i][1] = rand() % 255;
