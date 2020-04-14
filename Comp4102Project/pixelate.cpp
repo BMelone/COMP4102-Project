@@ -4,7 +4,7 @@
 #include <math.h>
 #include <unordered_set>
 
-enum QuantizeColor{BIT15, PALETTE, KMEANS};
+enum QuantizeColor{NBIT, PALETTE, KMEANS};
 
 /*
 	restrict_color_15bit takes a 24bit image and outputs a 15bit version of that image.
@@ -12,7 +12,7 @@ enum QuantizeColor{BIT15, PALETTE, KMEANS};
 	@param cv::Mat& input image
 	@return cv::Mat output image
 */
-cv::Mat restrict_color_15bit(cv::Mat& im1)
+cv::Mat restrict_color_nbit(cv::Mat& im1)
 
 {
 	// Converts the image from 24 bit RGB to b bit BGR back to 24 bit.
@@ -22,9 +22,9 @@ cv::Mat restrict_color_15bit(cv::Mat& im1)
 	int height = im1.rows;
 
 	cv::Mat out = cv::Mat::zeros(cv::Size(width, height), im1.type());
-	int p = 8;
-	int bs = 1024;
-	int bss = 32;
+	int p = 64;
+	int bs = 128;
+	int bss = 4;
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -183,7 +183,7 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
 	cv::Mat out;
 	switch (opt) 
 	{
-		case BIT15: out = restrict_color_15bit(s_mat); break;
+		case NBIT: out = restrict_color_nbit(s_mat); break;
 		case PALETTE:  out = restrict_color_palette(s_mat, colors); break;
 		case KMEANS: out = restrict_color_kMeans(s_mat, 8); break;
 	}
