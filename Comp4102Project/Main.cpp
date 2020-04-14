@@ -120,7 +120,7 @@ int main()
 	ApproximateColorMap(pixelate_output, colors);
 	FloodColors(cartoon_output, colors);
 	cv::imshow("image", cartoon_output);
-	cv::imwrite("o_cartoon.png", pixelate_output);
+	cv::imwrite("o_cartoon.png", cartoon_output);
 	cv::waitKey(0);
 
 	return 0;
