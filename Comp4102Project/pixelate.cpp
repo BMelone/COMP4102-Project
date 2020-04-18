@@ -125,22 +125,24 @@ cv::Mat restrict_color_kMeans(cv::Mat& im1, int ksplits) {
 	@param int factor to scale down by
 	@return cv::Mat output image
 */
-cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
+cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt, bool contours = false) {
 	int width = img.cols;
 	int height = img.rows;
 
-	//get contours
-	cv::Mat edge,contourImg,s_contourImg;
-	contourImg = cv::Mat::zeros(cv::Size(width, height), img.type());
-	cv::Canny(img, edge, 100, 200);
-	std::vector<std::vector<cv::Point> > contours,s_contour;
-	std::vector<cv::Vec4i> hierarchy;
-	cv::findContours(edge, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+	if (contours) {
+		//get contours
+		cv::Mat edge, contourImg, s_contourImg;
+		contourImg = cv::Mat::zeros(cv::Size(width, height), img.type());
+		cv::Canny(img, edge, 100, 200);
+		std::vector<std::vector<cv::Point> > contours, s_contour;
+		std::vector<cv::Vec4i> hierarchy;
+		cv::findContours(edge, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-	//draw on contours
-	for (int i = 0; i < contours.size(); i++)
-	{
-		cv::drawContours(img, contours, i, cv::Scalar(0, 0, 0), 1, 8, hierarchy, 0, cv::Point());
+		//draw on contours
+		for (int i = 0; i < contours.size(); i++)
+		{
+			cv::drawContours(img, contours, i, cv::Scalar(0, 0, 0), 1, 8, hierarchy, 0, cv::Point());
+		}
 	}
 
 	// smooth image
