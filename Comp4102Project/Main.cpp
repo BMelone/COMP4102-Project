@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
 	
 	cv::namedWindow("Pixelate", cv::WINDOW_NORMAL);
 	cv::resizeWindow("Pixelate", 500, 500);
-	cv::Mat pixelate_output = pixelate(segmented_output, down_scale,pixel_sigma_val, color_type, draw_contours);
+	cv::Mat pixelate_output = pixelate(segmented_output, down_scale, pixel_sigma_val, color_type, draw_contours);
 	cv::imshow("Pixelate", pixelate_output);
 	cv::imwrite(destination+"/o_pixelated.png", pixelate_output);
 	cv::waitKey(0);
@@ -141,14 +141,14 @@ int main(int argc, char* argv[])
 	cv::imwrite(destination + "/o_cartoon.png", cartoon_output);
 	cv::waitKey(0);
 	cv::destroyWindow("DePixelization");
-	
-	cv::namedWindow("Final Image", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Final Image", 500, 500);
-	cv::Mat final = addBackground(cartoon_output, background_image);
-	cv::imshow("Final Image", final);
-	cv::imwrite("o_final.png", final);
-	cv::waitKey(0);
-	cv::destroyWindow("Final Image");
-	
+	if (!background_image.empty()) {
+		cv::namedWindow("Final Image", cv::WINDOW_NORMAL);
+		cv::resizeWindow("Final Image", 500, 500);
+		cv::Mat final = addBackground(cartoon_output, background_image);
+		cv::imshow("Final Image", final);
+		cv::imwrite("o_final.png", final);
+		cv::waitKey(0);
+		cv::destroyWindow("Final Image");
+	}
 	return 0;
 }
