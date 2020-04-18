@@ -56,7 +56,8 @@ float diff(cv::Mat img, int x1, int y1, int x2, int y2) {
 cv::Mat segment_image(cv::Mat& img, float sigma, float c, int min_size, int *num_ccs, universe*& u) {
 	cv::Mat blurred;
 
-	int size = (int)ceil(sigma * 4.0) + 1;
+	int size = (int)ceil(sigma * 4.0);
+	size = size % 2 == 0 ? size + 1 : size; //ensure that size it odd
 	cv::Size ksize(size, size);
 	// You can try more different parameters
 	cv::GaussianBlur(img, blurred, ksize, sigma, sigma, cv::BORDER_DEFAULT);

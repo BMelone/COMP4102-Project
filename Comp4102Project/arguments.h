@@ -6,7 +6,7 @@
 
 cv::Mat input_image, background_image;
 std::string destination = ".";
-int sigma_val = 30;
+int sigma_val = 5;
 int threshold_val = 5;
 int min_size_val = 30;
 QuantizeColor color_type = KMEANS;

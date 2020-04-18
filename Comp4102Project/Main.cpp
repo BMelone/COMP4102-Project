@@ -27,7 +27,7 @@ std::unordered_set<int> savedSegments;
 
 void segment_and_display() {
 
-	sigma = sigma_val / 10;
+	sigma = sigma_val / 10.0f;
 	threshold = threshold_val * 50;
 	min_size = min_size_val * 100;
 	cv::Mat output = segment_image(input_image, sigma, threshold, min_size, &num_ccs, u);
