@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 	cv::namedWindow("Segmentation", cv::WINDOW_NORMAL);
 	cv::resizeWindow("Segmentation", 500, 500);
 	cv::imshow("Segmentation", segmented_output);
-	cv::imwrite(destination + "o_foreground.png", segmented_output);
+	cv::imwrite(destination + "/o_foreground.png", segmented_output);
 	cv::waitKey(0);
 	cv::destroyWindow("Segmentation");
 
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 		cv::resizeWindow("Final Image", 500, 500);
 		cv::Mat final = addBackground(cartoon_output, background_image);
 		cv::imshow("Final Image", final);
-		cv::imwrite("o_final.png", final);
+		cv::imwrite(destination+"/o_final.png", final);
 		cv::waitKey(0);
 		cv::destroyWindow("Final Image");
 	}
