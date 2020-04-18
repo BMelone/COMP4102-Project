@@ -4,10 +4,10 @@
 #include <math.h>
 #include <unordered_set>
 
-enum QuantizeColor{NBIT, PALETTE, KMEANS};
+#include "pixelate.h"
 
 /*
-	restrict_color_15bit takes a 24bit image and outputs a 15bit version of that image.
+	restrict_color_15bit takes a 24bit image and outputs a 6bit version of that image.
 	By Ryan
 	@param cv::Mat& input image
 	@return cv::Mat output image
@@ -138,10 +138,10 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
 	cv::findContours(edge, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
 	//draw on contours
-	for (int i = 0; i < contours.size(); i++)
-	{
-		cv::drawContours(img, contours, i, cv::Scalar(0, 0, 0), 1, 8, hierarchy, 0, cv::Point());
-	}
+	//for (int i = 0; i < contours.size(); i++)
+	//{
+	//	cv::drawContours(img, contours, i, cv::Scalar(0, 0, 0), 1, 8, hierarchy, 0, cv::Point());
+	//}
 
 	// smooth image
 	cv::Mat smoothed;
@@ -178,6 +178,13 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
 		cv::Vec4b(220, 0, 255, 255),
 		cv::Vec4b(110, 0, 255, 255),
 		cv::Vec4b(0, 0, 0, 255),
+		cv::Vec4b(171, 209, 255, 255),
+		cv::Vec4b(111, 162, 223, 255),
+		cv::Vec4b(61, 114, 179, 255),
+		cv::Vec4b(91, 96, 126, 255),
+		cv::Vec4b(23, 73, 133, 255),
+		cv::Vec4b(0, 37, 82, 255),
+		cv::Vec4b(128, 128, 128, 255),
 		cv::Vec4b(255, 255, 255, 255),
 		cv::Vec4b(64, 64, 64, 255)};
 	cv::Mat out;

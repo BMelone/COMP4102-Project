@@ -10,12 +10,13 @@
 #include "cartoon/border_graph.h"
 #include "cartoon/point_c.h"
 #include "cartoon/color_flood.h"
+#include "background.h"
 
 int threshold_val, min_size_val, sigma_val;
 const int threshold_max = 20;
 const int min_size_max = 200;
 const int sigma_max = 15;
-cv::Mat img;
+cv::Mat img, background;
 int num_ccs;
 float sigma, threshold;
 int min_size;
@@ -64,9 +65,10 @@ void select_location(int event, int x, int y, int flags, void* param) {
 
 int main()
 {
-	img = cv::imread("smokin.png");
-	if (img.data == NULL) {
-		std::cout << "The input file did not exist\n";
+	img = cv::imread("eimhin.png");
+	background = cv::imread("anime2.jpg");
+	if (img.data == NULL||background.data ==NULL) {
+		std::cout << "The input or Background file does not exist\n";
 		cv::waitKey(0);
 		return 0;
 	}
@@ -86,8 +88,8 @@ int main()
 
 	cv::waitKey(0);
 	cv::destroyWindow("sliders");
-	cv::namedWindow("image", cv::WINDOW_NORMAL);
-	cv::resizeWindow("image", 500, 500);
+	cv::namedWindow("Segmentation", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Segmentation", 500, 500);
 
 	cv::Vec4b transparent(0,0,0,0);
 	int width = img.cols;
@@ -101,16 +103,25 @@ int main()
 				cv::Vec4b(img_pixel[0], img_pixel[1], img_pixel[2], 255) : transparent;
 		}
 	}
-
-	cv::imshow("image", segmented_output);
+	
+	cv::namedWindow("Segmentation", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Segmentation", 500, 500);
+	cv::imshow("Segmentation", segmented_output);
 	cv::imwrite("o_foreground.png", segmented_output);
 	cv::waitKey(0);
+	cv::destroyWindow("Segmentation");
 
+	
+	cv::namedWindow("Pixelate", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Pixelate", 500, 500);
 	cv::Mat pixelate_output = pixelate(segmented_output, 4, KMEANS);
-	cv::imshow("image", pixelate_output);
+	cv::imshow("Pixelate", pixelate_output);
 	cv::imwrite("o_pixelted.png", pixelate_output);
 	cv::waitKey(0);
-
+	cv::destroyWindow("Pixelate");
+	
+	cv::namedWindow("DePixelization", cv::WINDOW_NORMAL);
+	cv::resizeWindow("DePixelization", 500, 500);
 	SimilarityGraph similarity_graph(pixelate_output, SimilarityGraph::SameColor);
 	BorderGraph border_graph = similarity_graph.ExtractDualGraph();
 	border_graph.SplitJunctions();
@@ -119,9 +130,18 @@ int main()
 	std::unordered_map<PointC, cv::Vec4b> colors;
 	ApproximateColorMap(pixelate_output, colors);
 	FloodColors(cartoon_output, colors);
-	cv::imshow("image", cartoon_output);
+	cv::imshow("DePixelization", cartoon_output);
 	cv::imwrite("o_cartoon.png", cartoon_output);
 	cv::waitKey(0);
-
+	cv::destroyWindow("DePixelization");
+	
+	cv::namedWindow("Final Image", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Final Image", 500, 500);
+	cv::Mat final = addBackground(cartoon_output,background);
+	cv::imshow("Final Image", final);
+	cv::imwrite("o_final.png", final);
+	cv::waitKey(0);
+	cv::destroyWindow("Final Image");
+	
 	return 0;
 }
