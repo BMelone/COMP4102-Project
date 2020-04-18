@@ -7,7 +7,7 @@
 #include "pixelate.h"
 
 /*
-	restrict_color_15bit takes a 24bit image and outputs a 6bit version of that image.
+	restrict_color_nbit takes a 24bit image and outputs a 6bit version of that image.
 	By Ryan
 	@param cv::Mat& input image
 	@return cv::Mat output image
@@ -15,9 +15,9 @@
 cv::Mat restrict_color_nbit(cv::Mat& im1)
 
 {
-	// Converts the image from 24 bit RGB to b bit BGR back to 24 bit.
+	// Converts the image from 24 bit RGB to 6 bit BGR back to 24 bit.
 	// Colors not in the palette are lost in the conversion and rounded
-	// to the nearest 15 bit color: https://wiki.superfamicom.org/palettes
+	// to the nearest 6 bit color: https://wiki.superfamicom.org/palettes
 	int width = im1.cols;
 	int height = im1.rows;
 
@@ -125,27 +125,28 @@ cv::Mat restrict_color_kMeans(cv::Mat& im1, int ksplits) {
 	@param int factor to scale down by
 	@return cv::Mat output image
 */
-cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt) {
+cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt, bool contours, float sigma) {
 	int width = img.cols;
 	int height = img.rows;
 
-	//get contours
-	cv::Mat edge,contourImg,s_contourImg;
-	contourImg = cv::Mat::zeros(cv::Size(width, height), img.type());
-	cv::Canny(img, edge, 100, 200);
-	std::vector<std::vector<cv::Point> > contours,s_contour;
-	std::vector<cv::Vec4i> hierarchy;
-	cv::findContours(edge, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+	if (contours) {
+		//get contours
+		cv::Mat edge, contourImg, s_contourImg;
+		contourImg = cv::Mat::zeros(cv::Size(width, height), img.type());
+		cv::Canny(img, edge, 100, 200);
+		std::vector<std::vector<cv::Point> > contours, s_contour;
+		std::vector<cv::Vec4i> hierarchy;
+		cv::findContours(edge, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-	//draw on contours
-	//for (int i = 0; i < contours.size(); i++)
-	//{
-	//	cv::drawContours(img, contours, i, cv::Scalar(0, 0, 0), 1, 8, hierarchy, 0, cv::Point());
-	//}
+		//draw on contours
+		for (int i = 0; i < contours.size(); i++)
+		{
+			cv::drawContours(img, contours, i, cv::Scalar(0, 0, 0), 1, 8, hierarchy, 0, cv::Point());
+		}
+	}
 
 	// smooth image
 	cv::Mat smoothed;
-	float sigma = 0.5;
 	int size = 7;
 	cv::Size ksize(size, size);
 	cv::GaussianBlur(img, smoothed, ksize, sigma, sigma, cv::BORDER_DEFAULT);
