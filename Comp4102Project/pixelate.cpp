@@ -4,7 +4,7 @@
 #include <math.h>
 #include <unordered_set>
 
-enum QuantizeColor{NBIT, PALETTE, KMEANS};
+#include "pixelate.h"
 
 /*
 	restrict_color_nbit takes a 24bit image and outputs a 6bit version of that image.
@@ -125,7 +125,7 @@ cv::Mat restrict_color_kMeans(cv::Mat& im1, int ksplits) {
 	@param int factor to scale down by
 	@return cv::Mat output image
 */
-cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt, bool contours = false) {
+cv::Mat pixelate(cv::Mat& img, int factor, float sigma, QuantizeColor opt,  bool contours) {
 	int width = img.cols;
 	int height = img.rows;
 
@@ -147,7 +147,6 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt, bool contours = fa
 
 	// smooth image
 	cv::Mat smoothed;
-	float sigma = 0.5;
 	int size = 7;
 	cv::Size ksize(size, size);
 	cv::GaussianBlur(img, smoothed, ksize, sigma, sigma, cv::BORDER_DEFAULT);
@@ -180,6 +179,13 @@ cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt, bool contours = fa
 		cv::Vec4b(220, 0, 255, 255),
 		cv::Vec4b(110, 0, 255, 255),
 		cv::Vec4b(0, 0, 0, 255),
+		cv::Vec4b(171, 209, 255, 255),
+		cv::Vec4b(111, 162, 223, 255),
+		cv::Vec4b(61, 114, 179, 255),
+		cv::Vec4b(91, 96, 126, 255),
+		cv::Vec4b(23, 73, 133, 255),
+		cv::Vec4b(0, 37, 82, 255),
+		cv::Vec4b(128, 128, 128, 255),
 		cv::Vec4b(255, 255, 255, 255),
 		cv::Vec4b(64, 64, 64, 255)};
 	cv::Mat out;

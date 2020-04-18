@@ -10,11 +10,13 @@
 #include "cartoon/border_graph.h"
 #include "cartoon/point_c.h"
 #include "cartoon/color_flood.h"
+#include "background.h"
 #include "arguments.h"
 
 const int threshold_max = 20;
 const int min_size_max = 200;
 const int sigma_max = 15;
+cv::Mat img, background;
 int num_ccs;
 float sigma, threshold;
 int min_size;
@@ -24,7 +26,9 @@ universe* u;
 std::vector<int> xVector, yVector;
 std::unordered_set<int> savedSegments;
 
-
+/*
+	Updates slider for segmentation arguments and display new segments
+*/
 void segment_and_display() {
 
 	sigma = sigma_val / 10.0f;
@@ -35,21 +39,33 @@ void segment_and_display() {
 	cv::imwrite(destination + "/o_segments.png", output);
 }
 
+/*
+	get sigma value from slider and update window
+*/
 void sigma_and_display(int slider_val, void* data) {
 	sigma_val = slider_val;
 	segment_and_display();
 }
 
+/*
+	gets threshold value from slider and update window
+*/
 void threshold_and_display(int slider_val, void* data) {
 	threshold_val = slider_val;
 	segment_and_display();
 }
 
+/*
+	gets minimum size value from slider and update window
+*/
 void min_size_and_display(int slider_val, void* data) {
 	min_size_val = slider_val;
 	segment_and_display();
 }
 
+/*
+	gets selected segment and saves it
+*/
 void select_location(int event, int x, int y, int flags, void* param) {
 	if (event == cv::EVENT_LBUTTONDOWN)
 	{
@@ -59,6 +75,9 @@ void select_location(int event, int x, int y, int flags, void* param) {
 	}
 }
 
+/*
+	Runs the application, first showing segmentation, then the pixelization, then depixelization, and finally adds background
+*/
 int main(int argc, char* argv[])
 {
 	if (ParseArguments(argc, argv)) {
@@ -76,8 +95,8 @@ int main(int argc, char* argv[])
 
 	cv::waitKey(0);
 	cv::destroyWindow("sliders");
-	cv::namedWindow("image", cv::WINDOW_NORMAL);
-	cv::resizeWindow("image", 500, 500);
+	cv::namedWindow("Segmentation", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Segmentation", 500, 500);
 
 	cv::Vec4b transparent(0,0,0,0);
 	int width = input_image.cols;
@@ -91,16 +110,25 @@ int main(int argc, char* argv[])
 				cv::Vec4b(img_pixel[0], img_pixel[1], img_pixel[2], 255) : transparent;
 		}
 	}
-
-	cv::imshow("image", segmented_output);
-	cv::imwrite(destination+"/o_foreground.png", segmented_output);
+	
+	cv::namedWindow("Segmentation", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Segmentation", 500, 500);
+	cv::imshow("Segmentation", segmented_output);
+	cv::imwrite(destination + "o_foreground.png", segmented_output);
 	cv::waitKey(0);
+	cv::destroyWindow("Segmentation");
 
-	cv::Mat pixelate_output = pixelate(segmented_output, down_scale, color_type, draw_contours);
-	cv::imshow("image", pixelate_output);
-	cv::imwrite(destination+"/o_pixelted.png", pixelate_output);
+	
+	cv::namedWindow("Pixelate", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Pixelate", 500, 500);
+	cv::Mat pixelate_output = pixelate(segmented_output, down_scale,pixel_sigma_val, color_type, draw_contours);
+	cv::imshow("Pixelate", pixelate_output);
+	cv::imwrite(destination+"/o_pixelated.png", pixelate_output);
 	cv::waitKey(0);
-
+	cv::destroyWindow("Pixelate");
+	
+	cv::namedWindow("DePixelization", cv::WINDOW_NORMAL);
+	cv::resizeWindow("DePixelization", 500, 500);
 	SimilarityGraph similarity_graph(pixelate_output, SimilarityGraph::SameColor);
 	BorderGraph border_graph = similarity_graph.ExtractDualGraph();
 	border_graph.SplitJunctions();
@@ -109,9 +137,18 @@ int main(int argc, char* argv[])
 	std::unordered_map<PointC, cv::Vec4b> colors;
 	ApproximateColorMap(pixelate_output, colors, down_scale);
 	FloodColors(cartoon_output, colors);
-	cv::imshow("image", cartoon_output);
+	cv::imshow("DePixelization", cartoon_output);
 	cv::imwrite(destination + "/o_cartoon.png", cartoon_output);
 	cv::waitKey(0);
-
+	cv::destroyWindow("DePixelization");
+	
+	cv::namedWindow("Final Image", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Final Image", 500, 500);
+	cv::Mat final = addBackground(cartoon_output, background_image);
+	cv::imshow("Final Image", final);
+	cv::imwrite("o_final.png", final);
+	cv::waitKey(0);
+	cv::destroyWindow("Final Image");
+	
 	return 0;
 }

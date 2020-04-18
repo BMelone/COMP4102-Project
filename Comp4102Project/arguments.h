@@ -9,10 +9,14 @@ std::string destination = ".";
 int sigma_val = 5;
 int threshold_val = 5;
 int min_size_val = 30;
+float pixel_sigma_val = 0.5;
 QuantizeColor color_type = KMEANS;
 int down_scale = 4;
 bool draw_contours = false;
-
+/*
+	print proper usage of the application
+	@By Eimhin
+*/
 static void PrintHelp()
 {
 	std::cout << "Help:\nThe first argument must be the input image. The following additional arguments may be added:\n"
@@ -21,12 +25,17 @@ static void PrintHelp()
 		<< "-b\tA background image to appear behind cartoon segments. Defaults to no background. e.g. '-b C:/folder/image.png'\n"
 		<< "-s\tAn integer of the down-scaling factor. Defaults to " << down_scale << ". e.g. '-s 8'\n"
 		<< "-c\tThe color reduction palette, either 'KMEANS', '6BIT', or 'BASIC'. Defaults to KMEANS. e.g. '-c BASIC'\n"
-		<< "-g\tThe integer default sigma value for gaussian blur. Defaults to " << threshold_val << ". e.g. '-g 1'\n"
-		<< "-t\tThe float default threshold value for segmentation. Defaults to " << sigma_val << ". e.g. '-c 5.0'\n"
+		<< "-g\tThe float default sigma value for gaussian blur for segmentation. Defaults to " << sigma_val << ". e.g. '-g 1.0'\n"
+		<< "-p\tThe float default sigma value for gaussian blur for pixelation. Defaults to " << pixel_sigma_val << ". e.g. '-p 1.0'\n"
+		<< "-t\tThe integer default threshold value for segmentation. Defaults to " << threshold_val  << ". e.g. '-t 5'\n"
 		<< "-m\tThe integer default minimum size of the segments. Defaults to " << min_size_val << ". e.g. '-m 50'\n"
 		<< "-l\tAdds contours to image before down-scaling, 'yes' or 'no'. Defaults to no. e.g. '-l yes'\n";
 }
 
+/*
+	parse arguements from command line to run with application
+	@By Eimhin
+*/
 bool ParseArguments(int argc, char* argv[]) {
 
 	if (argc < 2) {
@@ -55,7 +64,7 @@ bool ParseArguments(int argc, char* argv[]) {
 			destination = arg;
 		}
 		else if (param == "-b") {
-			background_image = cv::imread(argv[1]);
+			background_image = cv::imread(arg);
 			if (background_image.data == NULL) {
 				std::cout << "The background file did not exist.\n";
 				PrintHelp();
@@ -93,7 +102,17 @@ bool ParseArguments(int argc, char* argv[]) {
 				sigma_val = (int)(stof(arg)*10);
 			}
 			catch (...) {
-				std::cout << "The sigma was not a float.\n";
+				std::cout << "The segementation sigma was not a float.\n";
+				PrintHelp();
+				return true;
+			}
+		}
+		else if (param == "-p") {
+			try {
+				sigma_val = (stof(arg));
+			}
+			catch (...) {
+				std::cout << "The pixel sigma was not a float.\n";
 				PrintHelp();
 				return true;
 			}
