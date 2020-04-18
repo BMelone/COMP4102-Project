@@ -125,7 +125,7 @@ cv::Mat restrict_color_kMeans(cv::Mat& im1, int ksplits) {
 	@param int factor to scale down by
 	@return cv::Mat output image
 */
-cv::Mat pixelate(cv::Mat& img, int factor, QuantizeColor opt, bool contours, float sigma) {
+cv::Mat pixelate(cv::Mat& img, int factor, float sigma, QuantizeColor opt,  bool contours) {
 	int width = img.cols;
 	int height = img.rows;
 

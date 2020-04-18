@@ -26,7 +26,9 @@ universe* u;
 std::vector<int> xVector, yVector;
 std::unordered_set<int> savedSegments;
 
-
+/*
+	Updates slider for segmentation arguments and display new segments
+*/
 void segment_and_display() {
 
 	sigma = sigma_val / 10.0f;
@@ -37,21 +39,33 @@ void segment_and_display() {
 	cv::imwrite(destination + "/o_segments.png", output);
 }
 
+/*
+	get sigma value from slider and update window
+*/
 void sigma_and_display(int slider_val, void* data) {
 	sigma_val = slider_val;
 	segment_and_display();
 }
 
+/*
+	gets threshold value from slider and update window
+*/
 void threshold_and_display(int slider_val, void* data) {
 	threshold_val = slider_val;
 	segment_and_display();
 }
 
+/*
+	gets minimum size value from slider and update window
+*/
 void min_size_and_display(int slider_val, void* data) {
 	min_size_val = slider_val;
 	segment_and_display();
 }
 
+/*
+	gets selected segment and saves it
+*/
 void select_location(int event, int x, int y, int flags, void* param) {
 	if (event == cv::EVENT_LBUTTONDOWN)
 	{
@@ -61,6 +75,9 @@ void select_location(int event, int x, int y, int flags, void* param) {
 	}
 }
 
+/*
+	Runs the application, first showing segmentation, then the pixelization, then depixelization, and finally adds background
+*/
 int main(int argc, char* argv[])
 {
 	if (ParseArguments(argc, argv)) {
@@ -104,9 +121,9 @@ int main(int argc, char* argv[])
 	
 	cv::namedWindow("Pixelate", cv::WINDOW_NORMAL);
 	cv::resizeWindow("Pixelate", 500, 500);
-	cv::Mat pixelate_output = pixelate(segmented_output, down_scale, color_type, draw_contours);
+	cv::Mat pixelate_output = pixelate(segmented_output, down_scale,pixel_sigma_val, color_type, draw_contours);
 	cv::imshow("Pixelate", pixelate_output);
-	cv::imwrite(destination+"/o_pixelted.png", pixelate_output);
+	cv::imwrite(destination+"/o_pixelated.png", pixelate_output);
 	cv::waitKey(0);
 	cv::destroyWindow("Pixelate");
 	

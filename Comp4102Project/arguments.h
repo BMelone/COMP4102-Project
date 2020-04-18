@@ -13,7 +13,10 @@ float pixel_sigma_val = 0.5;
 QuantizeColor color_type = KMEANS;
 int down_scale = 4;
 bool draw_contours = false;
-
+/*
+	print proper usage of the application
+	@By Eimhin
+*/
 static void PrintHelp()
 {
 	std::cout << "Help:\nThe first argument must be the input image. The following additional arguments may be added:\n"
@@ -22,13 +25,17 @@ static void PrintHelp()
 		<< "-b\tA background image to appear behind cartoon segments. Defaults to no background. e.g. '-b C:/folder/image.png'\n"
 		<< "-s\tAn integer of the down-scaling factor. Defaults to " << down_scale << ". e.g. '-s 8'\n"
 		<< "-c\tThe color reduction palette, either 'KMEANS', '6BIT', or 'BASIC'. Defaults to KMEANS. e.g. '-c BASIC'\n"
-		<< "-g\tThe integer default sigma value for gaussian blur for segmentation. Defaults to " << sigma_val << ". e.g. '-g 1'\n"
-		<< "-p\tThe integer default sigma value for gaussian blur for pixelation. Defaults to " << pixel_sigma_val << ". e.g. '-p 1'\n"
-		<< "-t\tThe float default threshold value for segmentation. Defaults to " << threshold_val  << ". e.g. '-c 5.0'\n"
+		<< "-g\tThe float default sigma value for gaussian blur for segmentation. Defaults to " << sigma_val << ". e.g. '-g 1.0'\n"
+		<< "-p\tThe float default sigma value for gaussian blur for pixelation. Defaults to " << pixel_sigma_val << ". e.g. '-p 1.0'\n"
+		<< "-t\tThe integer default threshold value for segmentation. Defaults to " << threshold_val  << ". e.g. '-t 5'\n"
 		<< "-m\tThe integer default minimum size of the segments. Defaults to " << min_size_val << ". e.g. '-m 50'\n"
 		<< "-l\tAdds contours to image before down-scaling, 'yes' or 'no'. Defaults to no. e.g. '-l yes'\n";
 }
 
+/*
+	parse arguements from command line to run with application
+	@By Eimhin
+*/
 bool ParseArguments(int argc, char* argv[]) {
 
 	if (argc < 2) {
