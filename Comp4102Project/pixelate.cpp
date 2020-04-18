@@ -7,7 +7,7 @@
 enum QuantizeColor{NBIT, PALETTE, KMEANS};
 
 /*
-	restrict_color_15bit takes a 24bit image and outputs a 15bit version of that image.
+	restrict_color_nbit takes a 24bit image and outputs a 6bit version of that image.
 	By Ryan
 	@param cv::Mat& input image
 	@return cv::Mat output image
@@ -15,9 +15,9 @@ enum QuantizeColor{NBIT, PALETTE, KMEANS};
 cv::Mat restrict_color_nbit(cv::Mat& im1)
 
 {
-	// Converts the image from 24 bit RGB to b bit BGR back to 24 bit.
+	// Converts the image from 24 bit RGB to 6 bit BGR back to 24 bit.
 	// Colors not in the palette are lost in the conversion and rounded
-	// to the nearest 15 bit color: https://wiki.superfamicom.org/palettes
+	// to the nearest 6 bit color: https://wiki.superfamicom.org/palettes
 	int width = im1.cols;
 	int height = im1.rows;
 
