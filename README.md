@@ -8,7 +8,7 @@ The final report is available in the file FinalWriteUp.pdf on github, or in the 
 
 ## Project Presentation
 
-The project presentation video was submitted in CuLearn
+The project presentation video was submitted in CuLearn and is located in this link as a mp4: https://drive.google.com/file/d/1e8U1XRD2VmkqXP8QkWJyJ_NuLwGxW3CT/view?usp=sharing
 
 ## Code Demo and Execution Instructions
 
