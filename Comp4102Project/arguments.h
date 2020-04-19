@@ -109,7 +109,7 @@ bool ParseArguments(int argc, char* argv[]) {
 		}
 		else if (param == "-p") {
 			try {
-				sigma_val = (stof(arg));
+				pixel_sigma_val = (stof(arg));
 			}
 			catch (...) {
 				std::cout << "The pixel sigma was not a float.\n";
