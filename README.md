@@ -6,10 +6,6 @@ By: Benjamin Melone, Eimhin McDonald, Joseph Dooley, Ryan Kane
 
 The final report is available in the file FinalWriteUp.pdf on github, or in the CuLearn submission
 
-## Project Demonstration
-
-The demo video is on this url: https://drive.google.com/file/d/1mNl5U3CbNynxZYRsVIoP0Zib-HPWKIHM/view?usp=sharing
-
 ## Project Presentation
 
 The project presentation video was submitted in CuLearn
@@ -21,7 +17,7 @@ These instructions will describe how to compile and run using Windows, Visual St
 You can run on Linux, but that will not be explained in these instructions.
 Versions other than Visual Studio 2017 and OpenCV 3.4.9 are not guaranteed to work.
 
-An example of how to run the code is in the file CodeDemo.mp4
+An example of how to run the code is in the video located here: https://drive.google.com/file/d/1mNl5U3CbNynxZYRsVIoP0Zib-HPWKIHM/view?usp=sharing
 
 To compile and run the code:
 1. Clone the repository to your computer
